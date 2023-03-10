@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  codeforces_app:
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    links:
+      - postgres
+    volumes:
+      - codeforces_app-django:/usr/src/app
+      - codeforces_app-static:/usr/src/app/static
+    env_file: ./codeforces_app/.env
+    environment:
+      - DEBUG='true'
+      # The environment variable credentials that is needed 
+      # in django settings for Postgres to work.
+      - POSTGRES_HOST=postgres
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT=5432
+    depends_on:
+      - postgres
+    command: /usr/local/bin/gunicorn codeforces_app.wsgi:application -w 2 -b :8000
+  
+
+  postgres:
+    restart: always
+    image: postgres:15.2
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      # The environment variable credentials that is needed 
+      # in django settings for Postgres to work.
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+
+volumes:
+  codeforces_app-django:
+  codeforces_app-static:
+  pgdata:
