@@ -3,11 +3,14 @@ version: '3.9'
 services:
   codeforces_app:
     restart: always
-    build: .
+    build:
+            context: .
+            dockerfile: ./docker/backend/Dockerfile
     ports:
       - "8000:8000"
     links:
       - postgres
+      # - redis
     volumes:
       - codeforces_app-django:/usr/src/app
       - codeforces_app-static:/usr/src/app/static
@@ -39,6 +42,37 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+    expose:
+          - 5432
+
+  # redis:
+  #       restart: unless-stopped
+  #       image: redis:7.0.5-alpine 
+  #       expose:
+  #           - 6379
+
+  # Celery worker
+  # celery_worker:
+  #   restart: unless-stopped
+  #   build:
+  #           context: .
+  #           dockerfile: ./docker/backend/Dockerfile
+  #   entrypoint: ./docker/backend/worker-entrypoint.sh
+  #   volumes:
+  #       - codeforces_app-static:/usr/src/app/static
+  #   environment:
+  #       - DEBUG="True"
+  #       - CELERY_BROKER_URL="redis://redis:6379/0"
+  #       - CELERY_RESULT_BACKEND="redis://redis:6379/0"
+  #       - DJANGO_DB=postgresql
+  #       - POSTGRES_HOST=postgres
+  #       - POSTGRES_NAME
+  #       - POSTGRES_USER
+  #       - POSTGRES_PASSWORD
+  #       - POSTGRES_PORT=5432
+  #   depends_on:
+  #       - codeforces_app
+  #       - redis
 
 volumes:
   codeforces_app-django:
