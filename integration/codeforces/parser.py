@@ -9,9 +9,12 @@ def batch(iterable, n=1):
         yield iterable[ndx:min(ndx + n, l)]
 
 
-def start_bulk_create(Entry:models.Model, list_to_create:list[models.Model], batch_size=1000)->None:
+def start_bulk_create(Entry:models.Model, list_to_create:list[models.Model], batch_size=1000)->list[models.Model]:
+    created = []
     for chunk in batch(list_to_create, batch_size):
-        Entry.objects.bulk_create(chunk, batch_size=batch_size)
+        res = Entry.objects.bulk_create(chunk, batch_size=batch_size)
+        created += res  
+    return created
     
 
 def get_problems(data: dict) -> list:
@@ -67,24 +70,26 @@ def insert_new_problems(problems:dict) -> None:
             )
 
     if problems_to_create:
-        start_bulk_create(Entry=Problem, list_to_create=problems_to_create)
+        created = start_bulk_create(Entry=Problem, list_to_create=problems_to_create)
+        insert_tags_to_problems(problems_dict=problems, created_problems=created)
 
 
-def insert_tags_to_problems(problems) -> None:
-    tags_id = Tag.objects.values('id', 'name')
-    print('/////////dfdsfds////', tags_id)
-    for problem in problems.values():
-        print('ggggggfvfdvdsadagggsdcdcsdgggggg', problem)
+def insert_tags_to_problems(problems_dict, created_problems):
+    tags_db = Tag.objects.values('id', 'name')
+    tags_dict = {value.get('name'): value.get('id') for value in tags_db}
+    tags_to_problems = []
 
-
-
-
-
+    for problem in created_problems:
+        obj_from_api = problems_dict.get((problem.contest_id, problem.index))
+        problem_tags = list(set(obj_from_api.get('tags'))) 
         
-# a2 = Article(headline='NASA uses Python')
-# >>> a2.save()
-# >>> a2.publications.add(p1, p2)
-# >>> a2.publications.add(p3)
+        for tag in problem_tags:
+            tag_id  = tags_dict.get(tag)
+            new_tags = problem.tags.through(tag_id=tag_id, problem_id=problem.id)
+            tags_to_problems.append(new_tags)
+    
+    if tags_to_problems:
+        start_bulk_create(Entry=Problem.tags.through, list_to_create=tags_to_problems)
 
 
 
@@ -93,7 +98,3 @@ def start_problems_task():
     problems, tags = get_problems_lst_and_tags()
     insert_new_tags(tags=list(tags))
     insert_new_problems(problems=problems)
-    insert_tags_to_problems(problems=problems)
-
-# from integration.codeforces.parser import start_problems_task
-# start_problems_task()

@@ -13,7 +13,7 @@ class TypeEnum(Enum):
 
 class Tag(models.Model):
     """This is class representing a topics models"""
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -32,7 +32,7 @@ class Problem(models.Model):
         max_length=200,
         choices=[
         (TypeEnum.PROGRAMMING, ('PROGRAMMING')),
-        (TypeEnum.PROGRAMMING, ('QUESTION')),
+        (TypeEnum.QUESTION, ('QUESTION')),
         ]
     )
     points = models.FloatField(validators=[MinValueValidator(0.0)], null=True)
