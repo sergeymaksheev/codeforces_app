@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 from enum import Enum
 
-from django.db import models
 from django.core.validators import MinValueValidator
 
 # Create your models here.
@@ -36,7 +35,7 @@ class Problem(models.Model):
         (TypeEnum.PROGRAMMING, ('QUESTION')),
         ]
     )
-    points = models.FloatField(validators=[MinValueValidator(0.0)])
+    points = models.FloatField(validators=[MinValueValidator(0.0)], null=True)
     rating = models.IntegerField(validators=[MinValueValidator(0)], null=True)
     solved_count = models.IntegerField(validators=[MinValueValidator(0)])
     tags = models.ManyToManyField(Tag, related_name='tags')

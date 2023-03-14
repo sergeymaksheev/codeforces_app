@@ -9,9 +9,10 @@ ADD ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
 ADD ./codeforces_app /app/codeforces_app
-ADD ./docker /app/docker
+ADD ./app /app
+#ADD ./docker /app/docker
 
-#RUN chmod +x /app/codeforces_app/server-entrypoint.sh
-RUN chmod +x /app/docker/backend/worker-entrypoint.sh
+# RUN chmod +x /app/codeforces_app/server-entrypoint.sh
+# RUN chmod +x /app/docker/backend/worker-entrypoint.sh
 
 COPY . .
