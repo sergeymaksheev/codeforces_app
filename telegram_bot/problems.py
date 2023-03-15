@@ -35,8 +35,12 @@ class List:
 
     def get_list(self):
 
-        return Tag.objects.all()
-    
+        res = list(Tag.objects.all())
+        tag_list = []
+        for tag in res:
+            tag_list.append(tag)
+            return tag_list
+            
 
     @staticmethod
     def format_list(lst: Tag) -> str:
@@ -45,8 +49,8 @@ class List:
     
 
     def start(self) -> None:
-        res = self.get_list()
-        return self.format_list(lst=list(res))
+        return self.get_list()
+
 
 
 lst = List()
