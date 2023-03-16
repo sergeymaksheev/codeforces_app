@@ -95,6 +95,8 @@ def insert_tags_to_problems(problems_dict, created_problems):
 
 
 def start_problems_task():
+    print('Started')
     problems, tags = get_problems_lst_and_tags()
     insert_new_tags(tags=list(tags))
     insert_new_problems(problems=problems)
+    print('Finished')

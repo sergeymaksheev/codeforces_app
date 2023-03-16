@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from decouple import config
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -89,8 +90,11 @@ DATABASES = {
     }
 }
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = config("CELERY_BROKER", cast=str)
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", cast=str)
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -133,3 +137,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CELERY_BEAT_SCHEDULE = { # scheduler configuration 
+    'Task_two_schedule' : {  # whatever the name you want 
+        'task': 'main_app.tasks.start_loading_codeforces', # name of task with path
+        'schedule': 30, # 30 runs this task every 30 seconds
+    },
+}

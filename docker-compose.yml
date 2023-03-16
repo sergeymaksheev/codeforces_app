@@ -10,26 +10,38 @@ services:
       - "8000:8000"
     links:
       - postgres
-      # - redis
+      - redis
     volumes:
       - codeforces_app-django:/usr/src/app
       - codeforces_app-static:/usr/src/app/static
-      # - /usr/src/app
-      # - /usr/src/app/static
-      #- ./app:/app
     env_file: ./codeforces_app/.env
     environment:
       - DEBUG='true'
       # The environment variable credentials that is needed 
       # in django settings for Postgres to work.
-      - POSTGRES_HOST=postgres
-      - POSTGRES_NAMEbf3e694f6345
+      - POSTGRES_HOST
+      - POSTGRES_NAME
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_PORT=5432
+      - POSTGRES_PORTS
     depends_on:
       - postgres
     command: /usr/local/bin/gunicorn codeforces_app.wsgi:application -w 2 -b :8000 --reload
+    networks:
+      - codeforces_app
+
+  telebot:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    command: python manage.py bot
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    depends_on:
+      - postgres
+      - codeforces_app
+    networks:
+      - codeforces_app
 
   postgres:
     restart: always
@@ -46,38 +58,87 @@ services:
       - POSTGRES_PASSWORD
     expose:
           - 5432
+    command: -p 5432
+    networks:
+      - codeforces_app
 
-  # redis:
-  #       restart: unless-stopped
-  #       image: redis:7.0.5-alpine 
-  #       expose:
-  #           - 6379
+  redis:
+    image: redis:7-alpine
+    networks: 
+      - codeforces_app
 
-  # Celery worker
-  # celery_worker:
-  #   restart: unless-stopped
-  #   build:
-  #           context: .
-  #           dockerfile: ./docker/backend/Dockerfile
-  #   entrypoint: ./docker/backend/worker-entrypoint.sh
-  #   volumes:
-  #       - codeforces_app-static:/usr/src/app/static
-  #   environment:
-  #       - DEBUG="True"
-  #       - CELERY_BROKER_URL="redis://redis:6379/0"
-  #       - CELERY_RESULT_BACKEND="redis://redis:6379/0"
-  #       - DJANGO_DB=postgresql
-  #       - POSTGRES_HOST=postgres
-  #       - POSTGRES_NAME
-  #       - POSTGRES_USER
-  #       - POSTGRES_PASSWORD
-  #       - POSTGRES_PORT=5432
-  #   depends_on:
-  #       - codeforces_app
-  #       - redis
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+
+    image: codeforces_app_celery_worker
+    command: /start-celeryworker
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+  
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+
+    image: codeforces_app_celery_beat
+    command: /start-celerybeat
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    image: codeforces_app_celery_flower
+    command: /start-flower
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+
+networks:
+  codeforces_app:
+    external: true
 
 volumes:
   codeforces_app-django:
   codeforces_app-static:
-  #app:
   pgdata:

@@ -1,0 +1,235 @@
+{
+  "id": 938113615,
+  "is_bot": false,
+  "first_name": "Sergey",
+  "username": "Sergey_MD20",
+  "last_name": null,
+  "language_code": "en",
+  "can_join_groups": null,
+  "can_read_all_group_messages": null,
+  "supports_inline_queries": null,
+  "is_premium": null,
+  "added_to_attachment_menu": null,
+  "message": {
+    "content_type": "text",
+    "id": 931,
+    "message_id": 931,
+    "from_user": "<telebot.types.User object at 0x7f64c38cd780>",
+    "date": 1678886481,
+    "chat": "<telebot.types.Chat object at 0x7f64c38cce20>",
+    "sender_chat": null,
+    "forward_from": null,
+    "forward_from_chat": null,
+    "forward_from_message_id": null,
+    "forward_signature": null,
+    "forward_sender_name": null,
+    "forward_date": null,
+    "is_automatic_forward": null,
+    "reply_to_message": null,
+    "via_bot": null,
+    "edit_date": null,
+    "has_protected_content": null,
+    "media_group_id": null,
+    "author_signature": null,
+    "text": "Вы нажали на список тем",
+    "entities": null,
+    "caption_entities": null,
+    "audio": null,
+    "document": null,
+    "photo": null,
+    "sticker": null,
+    "video": null,
+    "video_note": null,
+    "voice": null,
+    "caption": null,
+    "contact": null,
+    "location": null,
+    "venue": null,
+    "animation": null,
+    "dice": null,
+    "new_chat_member": null,
+    "new_chat_members": null,
+    "left_chat_member": null,
+    "new_chat_title": null,
+    "new_chat_photo": null,
+    "delete_chat_photo": null,
+    "group_chat_created": null,
+    "supergroup_chat_created": null,
+    "channel_chat_created": null,
+    "migrate_to_chat_id": null,
+    "migrate_from_chat_id": null,
+    "pinned_message": null,
+    "invoice": null,
+    "successful_payment": null,
+    "connected_website": null,
+    "reply_markup": "<telebot.types.InlineKeyboardMarkup object at 0x7f64c38cd6f0>",
+    "message_thread_id": null,
+    "is_topic_message": null,
+    "forum_topic_created": null,
+    "forum_topic_closed": null,
+    "forum_topic_reopened": null,
+    "has_media_spoiler": null,
+    "forum_topic_edited": null,
+    "general_forum_topic_hidden": null,
+    "general_forum_topic_unhidden": null,
+    "write_access_allowed": null,
+    "user_shared": null,
+    "chat_shared": null,
+    "json": {
+      "message_id": 931,
+      "from": {
+        "id": 6265153892,
+        "is_bot": true,
+        "first_name": "Problems",
+        "username": "get_problemsbot"
+      },
+      "chat": {
+        "id": 938113615,
+        "first_name": "Sergey",
+        "username": "Sergey_MD20",
+        "type": "private"
+      },
+      "date": 1678886481,
+      "text": "Вы нажали на список тем",
+      "reply_markup": {
+        "inline_keyboard": [
+          [{ "text": "interactive", "callback_data": "get_rating" }],
+          [{ "text": "shortest paths", "callback_data": "get_rating" }],
+          [{ "text": "fft", "callback_data": "get_rating" }],
+          [
+            { "text": "constructive algorithms", "callback_data": "get_rating" }
+          ],
+          [{ "text": "dfs and similar", "callback_data": "get_rating" }],
+          [{ "text": "expression parsing", "callback_data": "get_rating" }],
+          [{ "text": "dp", "callback_data": "get_rating" }],
+          [{ "text": "number theory", "callback_data": "get_rating" }],
+          [{ "text": "implementation", "callback_data": "get_rating" }],
+          [{ "text": "graphs", "callback_data": "get_rating" }],
+          [{ "text": "data structures", "callback_data": "get_rating" }],
+          [{ "text": "probabilities", "callback_data": "get_rating" }],
+          [{ "text": "flows", "callback_data": "get_rating" }],
+          [{ "text": "greedy", "callback_data": "get_rating" }],
+          [{ "text": "math", "callback_data": "get_rating" }],
+          [{ "text": "*special", "callback_data": "get_rating" }],
+          [{ "text": "ternary search", "callback_data": "get_rating" }],
+          [{ "text": "bitmasks", "callback_data": "get_rating" }],
+          [{ "text": "geometry", "callback_data": "get_rating" }],
+          [{ "text": "binary search", "callback_data": "get_rating" }],
+          [{ "text": "brute force", "callback_data": "get_rating" }],
+          [{ "text": "dsu", "callback_data": "get_rating" }],
+          [{ "text": "sortings", "callback_data": "get_rating" }],
+          [{ "text": "schedules", "callback_data": "get_rating" }],
+          [{ "text": "combinatorics", "callback_data": "get_rating" }],
+          [{ "text": "meet-in-the-middle", "callback_data": "get_rating" }],
+          [
+            {
+              "text": "string suffix structures",
+              "callback_data": "get_rating"
+            }
+          ],
+          [{ "text": "trees", "callback_data": "get_rating" }],
+          [{ "text": "2-sat", "callback_data": "get_rating" }],
+          [{ "text": "divide and conquer", "callback_data": "get_rating" }],
+          [{ "text": "strings", "callback_data": "get_rating" }],
+          [
+            {
+              "text": "chinese remainder theorem",
+              "callback_data": "get_rating"
+            }
+          ],
+          [{ "text": "two pointers", "callback_data": "get_rating" }],
+          [{ "text": "hashing", "callback_data": "get_rating" }],
+          [{ "text": "graph matchings", "callback_data": "get_rating" }],
+          [{ "text": "matrices", "callback_data": "get_rating" }],
+          [{ "text": "games", "callback_data": "get_rating" }]
+        ]
+      }
+    }
+  },
+  "inline_message_id": null,
+  "chat_instance": "7389388822976877287",
+  "data": "get_rating",
+  "game_short_name": null,
+  "json": {
+    "id": "4029167298187953857",
+    "from": {
+      "id": 938113615,
+      "is_bot": false,
+      "first_name": "Sergey",
+      "username": "Sergey_MD20",
+      "language_code": "en"
+    },
+    "message": {
+      "message_id": 931,
+      "from": {
+        "id": 6265153892,
+        "is_bot": true,
+        "first_name": "Problems",
+        "username": "get_problemsbot"
+      },
+      "chat": {
+        "id": 938113615,
+        "first_name": "Sergey",
+        "username": "Sergey_MD20",
+        "type": "private"
+      },
+      "date": 1678886481,
+      "text": "Вы нажали на список тем",
+      "reply_markup": {
+        "inline_keyboard": [
+          [{ "text": "interactive", "callback_data": "get_rating" }],
+          [{ "text": "shortest paths", "callback_data": "get_rating" }],
+          [{ "text": "fft", "callback_data": "get_rating" }],
+          [
+            { "text": "constructive algorithms", "callback_data": "get_rating" }
+          ],
+          [{ "text": "dfs and similar", "callback_data": "get_rating" }],
+          [{ "text": "expression parsing", "callback_data": "get_rating" }],
+          [{ "text": "dp", "callback_data": "get_rating" }],
+          [{ "text": "number theory", "callback_data": "get_rating" }],
+          [{ "text": "implementation", "callback_data": "get_rating" }],
+          [{ "text": "graphs", "callback_data": "get_rating" }],
+          [{ "text": "data structures", "callback_data": "get_rating" }],
+          [{ "text": "probabilities", "callback_data": "get_rating" }],
+          [{ "text": "flows", "callback_data": "get_rating" }],
+          [{ "text": "greedy", "callback_data": "get_rating" }],
+          [{ "text": "math", "callback_data": "get_rating" }],
+          [{ "text": "*special", "callback_data": "get_rating" }],
+          [{ "text": "ternary search", "callback_data": "get_rating" }],
+          [{ "text": "bitmasks", "callback_data": "get_rating" }],
+          [{ "text": "geometry", "callback_data": "get_rating" }],
+          [{ "text": "binary search", "callback_data": "get_rating" }],
+          [{ "text": "brute force", "callback_data": "get_rating" }],
+          [{ "text": "dsu", "callback_data": "get_rating" }],
+          [{ "text": "sortings", "callback_data": "get_rating" }],
+          [{ "text": "schedules", "callback_data": "get_rating" }],
+          [{ "text": "combinatorics", "callback_data": "get_rating" }],
+          [{ "text": "meet-in-the-middle", "callback_data": "get_rating" }],
+          [
+            {
+              "text": "string suffix structures",
+              "callback_data": "get_rating"
+            }
+          ],
+          [{ "text": "trees", "callback_data": "get_rating" }],
+          [{ "text": "2-sat", "callback_data": "get_rating" }],
+          [{ "text": "divide and conquer", "callback_data": "get_rating" }],
+          [{ "text": "strings", "callback_data": "get_rating" }],
+          [
+            {
+              "text": "chinese remainder theorem",
+              "callback_data": "get_rating"
+            }
+          ],
+          [{ "text": "two pointers", "callback_data": "get_rating" }],
+          [{ "text": "hashing", "callback_data": "get_rating" }],
+          [{ "text": "graph matchings", "callback_data": "get_rating" }],
+          [{ "text": "matrices", "callback_data": "get_rating" }],
+          [{ "text": "games", "callback_data": "get_rating" }]
+        ]
+      }
+    },
+    "chat_instance": "7389388822976877287",
+    "data": "get_rating"
+  }
+}

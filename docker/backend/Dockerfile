@@ -9,10 +9,19 @@ ADD ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
 ADD ./codeforces_app /app/codeforces_app
-ADD ./app /app
-#ADD ./docker /app/docker
-
-# RUN chmod +x /app/codeforces_app/server-entrypoint.sh
-# RUN chmod +x /app/docker/backend/worker-entrypoint.sh
 
 COPY . .
+
+COPY ./docker/backend/celery/worker_start /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+COPY ./docker/backend/celery/beat_start /start-celerybeat
+RUN sed -i 's/\r$//g' /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+COPY ./docker/backend/celery/flower_start /start-flower
+RUN sed -i 's/\r$//g' /start-flower
+RUN chmod +x /start-flower
+
+WORKDIR /app
