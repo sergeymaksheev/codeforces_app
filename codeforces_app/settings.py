@@ -142,6 +142,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_BEAT_SCHEDULE = { # scheduler configuration 
     'Task_two_schedule' : {  # whatever the name you want 
         'task': 'main_app.tasks.start_loading_codeforces', # name of task with path
-        'schedule': 30, # 30 runs this task every 30 seconds
+        'schedule': 3600, # task every 3600 seconds
     },
 }
