@@ -17,13 +17,13 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
+TELEGRAM_BOT_API_KEY = config('TELEGRAM_BOT_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "app.apps.AppConfig",
-
+    "main_app.apps.MainAppConfig",
+    "telegram_bot.apps.TelegramBotConfig",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +90,11 @@ DATABASES = {
     }
 }
 
+CELERY_BROKER_URL = config("CELERY_BROKER", cast=str)
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND", cast=str)
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -124,10 +130,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+CELERY_BEAT_SCHEDULE = { # scheduler configuration 
+    'Task_two_schedule' : {  # whatever the name you want 
+        'task': 'main_app.tasks.start_loading_codeforces', # name of task with path
+        'schedule': 30, # 30 runs this task every 30 seconds
+    },
+}

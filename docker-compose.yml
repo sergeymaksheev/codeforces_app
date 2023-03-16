@@ -3,11 +3,14 @@ version: '3.9'
 services:
   codeforces_app:
     restart: always
-    build: .
+    build:
+            context: .
+            dockerfile: ./docker/backend/Dockerfile
     ports:
       - "8000:8000"
     links:
       - postgres
+      - redis
     volumes:
       - codeforces_app-django:/usr/src/app
       - codeforces_app-static:/usr/src/app/static
@@ -16,15 +19,29 @@ services:
       - DEBUG='true'
       # The environment variable credentials that is needed 
       # in django settings for Postgres to work.
-      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST
       - POSTGRES_NAME
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - POSTGRES_PORT=5432
+      - POSTGRES_PORTS
     depends_on:
       - postgres
-    command: /usr/local/bin/gunicorn codeforces_app.wsgi:application -w 2 -b :8000
-  
+    command: /usr/local/bin/gunicorn codeforces_app.wsgi:application -w 2 -b :8000 --reload
+    networks:
+      - codeforces_app
+
+  telebot:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    command: python manage.py bot
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    depends_on:
+      - postgres
+      - codeforces_app
+    networks:
+      - codeforces_app
 
   postgres:
     restart: always
@@ -39,6 +56,87 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+    expose:
+          - 5432
+    command: -p 5432
+    networks:
+      - codeforces_app
+
+  redis:
+    image: redis:7-alpine
+    networks: 
+      - codeforces_app
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+
+    image: codeforces_app_celery_worker
+    command: /start-celeryworker
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+  
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+
+    image: codeforces_app_celery_beat
+    command: /start-celerybeat
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    image: codeforces_app_celery_flower
+    command: /start-flower
+    volumes:
+      - codeforces_app-django:/usr/src/app
+    env_file: ./codeforces_app/.env
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - POSTGRES_HOST
+      - POSTGRES_NAME
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_PORT
+    networks:
+      - codeforces_app
+
+networks:
+  codeforces_app:
+    external: true
 
 volumes:
   codeforces_app-django:
