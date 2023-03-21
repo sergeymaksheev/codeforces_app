@@ -1,4 +1,5 @@
 import random
+import telebot
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -24,6 +25,11 @@ class Command(BaseCommand):
 
     help = 'Implemented to Django application telegram bot setup command'
 
+    bot.set_my_commands([
+        telebot.types.BotCommand("/start", "Перезапуск бота"),
+        telebot.types.BotCommand("/tags", "Выбор темы"),
+        #telebot.types.BotCommand("/help", "Помощь")
+    ])
 
     @bot.message_handler(commands=['help', 'start'])
     def send_welcome(message):
@@ -45,8 +51,13 @@ class Command(BaseCommand):
         markup.add(btn)
         return markup
             
+    @bot.message_handler(commands=['tags'])
+    def start_tag(message):
+        kb = command.get_tags()
+        bot.send_message(message.chat.id, 'Вы нажали на список тем', reply_markup=kb)
+        
 
-    def get_tag(self):
+    def get_tags(self):
         queryset = Tag.objects.all()
         lst = list(queryset)
         kb = types.InlineKeyboardMarkup(row_width=1)    
@@ -66,14 +77,15 @@ class Command(BaseCommand):
     @bot.callback_query_handler(func=lambda callback: callback.data)
     def check_callback_data(callback):
         if callback.data == 'get_tags':
-            kb = command.get_tag()
-            #bot.send_message(callback.message.chat.id, 'Вы нажали на список тем', reply_markup=kb)
-            bot.edit_message_reply_markup(
-                    chat_id = callback.message.chat.id, 
-                    message_id = callback.message.id, \
-                    reply_markup = kb
-                    )# удаляем кнопки у последнего сообщения
+            kb = command.get_tags()
+            bot.send_message(callback.message.chat.id, 'Вы нажали на список тем', reply_markup=kb)
+            # bot.edit_message_reply_markup(
+            #         chat_id = callback.message.chat.id, 
+            #         message_id = callback.message.id, \
+            #         reply_markup = kb
+            #         )# удаляем кнопки у последнего сообщения
         else:
+            #bot.clear_reply_handlers
             command.selected_tag_name = callback.data.split('/')[1]
             callback.data = callback.data.split('/')[0]
             if callback.data == 'get_rating':
@@ -81,12 +93,17 @@ class Command(BaseCommand):
                 min_value, max_value = command.get_rating(command.selected_tag_name)
                 min_value = min_value.get('rating__min')
                 max_value = max_value.get('rating__max')
-
-                send = bot.edit_message_text(
-                    f'Вы выбрали тему {command.selected_tag_name}\
-                    Введите сложность задачи: от {min_value} до {max_value}',
+                
+                # send = bot.edit_message_text(
+                #     f'Вы выбрали тему {command.selected_tag_name}\
+                #     Введите сложность задачи: от {min_value} до {max_value}',
+                #     chat_id=callback.message.chat.id,
+                #     message_id = callback.message.id,
+                #     reply_markup='')
+                send = bot.send_message(
                     chat_id=callback.message.chat.id,
-                    message_id = callback.message.id,
+                    text=f'Вы выбрали тему {command.selected_tag_name}\
+                    Введите сложность задачи: от {min_value} до {max_value}',
                     reply_markup='')
                 bot.register_next_step_handler(message=send, 
                                                 min_value=min_value, 
@@ -120,7 +137,7 @@ class Command(BaseCommand):
             bot.edit_message_reply_markup(message.chat.id, text='Вы можете попробовать заново выбрать тему', reply_markup=kb)
         else:
             command.get_problems(tag_name=tag_name, rating=rating, message=message)
-        
+
 
     @staticmethod
     def get_problems(tag_name, rating, message):
