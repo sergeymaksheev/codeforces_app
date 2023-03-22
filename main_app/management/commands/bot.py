@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
     @bot.message_handler(commands=['help', 'start'])
     def send_welcome(message):
-        """Start working with bot. Get a first menu"""
+        """Start working with bot. Get a first menu: Choose tags"""
 
         bot.delete_message(message.chat.id, message.message_id)
         bot.send_message(message.chat.id, 
@@ -43,24 +43,28 @@ class Command(BaseCommand):
                         reply_markup=command.create_menu()
                         )
 
-        
+
     @staticmethod
     def create_menu() -> types.InlineKeyboardMarkup:
-        """Create menu for TG bot"""
+        """Create menu for TG bot: Button, when you push on it, 
+        create calls and start get_tags function"""
 
         markup = types.InlineKeyboardMarkup()
         btn = types.InlineKeyboardButton(text='Список тем', callback_data='get_tags')
         markup.add(btn)
         return markup
-            
+
 
     @bot.message_handler(commands=['tags'])
-    def start_tag(message):
+    def command_tag(message):
+        """Receive commmand /tags from BotCommand and start get_tags function"""
+
         kb = command.get_tags()
         bot.send_message(message.chat.id, 'Вы нажали на список тем', reply_markup=kb)
-        
+    
 
-    def get_tags(self) -> types.InlineKeyboardMarkup:
+    @staticmethod
+    def get_tags() -> types.InlineKeyboardMarkup:
         """Get tags from db and create list with tags"""
 
         queryset = Tag.objects.all()
@@ -70,11 +74,11 @@ class Command(BaseCommand):
             btn = types.InlineKeyboardButton(text=tag.name, callback_data=f"get_rating/{tag.name}")
             kb.add(btn)
         return kb
-    
+
 
     @staticmethod
     def get_rating(tag_name) -> Dict[str, int]:
-        """Aggregate min and max rating for problems when you chose tag"""
+        """Aggregate min and max rating for problems when you chose tag and create callback in get_tags function"""
 
         max_value =  Problem.objects.filter(tags__name=tag_name).aggregate(Max('rating'))
         min_value =  Problem.objects.filter(tags__name=tag_name).aggregate(Min('rating'))
@@ -83,6 +87,8 @@ class Command(BaseCommand):
 
     @bot.callback_query_handler(func=lambda callback: callback.data)
     def check_callback_data(callback):
+        """Check all callback calls from functions"""
+
         if callback.data == 'get_tags':
             kb = command.get_tags()
             bot.send_message(callback.message.chat.id, 'Вы нажали на список тем', reply_markup=kb)
@@ -98,21 +104,23 @@ class Command(BaseCommand):
                 max_value = max_value.get('rating__max')
                 
                 send = bot.send_message(
-                                chat_id=callback.message.chat.id,
-                                text=f'Вы выбрали тему {command.selected_tag_name}\
-                                Введите сложность задачи: от {min_value} до {max_value}',
-                                reply_markup=''
-                                )
+                    chat_id=callback.message.chat.id,
+                    text=f'Вы выбрали тему {command.selected_tag_name}\
+                    Введите сложность задачи: от {min_value} до {max_value}',
+                    reply_markup='',
+                )
                 bot.register_next_step_handler(
-                                message=send, 
-                                min_value=min_value, 
-                                max_value=max_value, 
-                                callback=command.get_tagname
-                                )
-
+                    message=send, 
+                    min_value=min_value, 
+                    max_value=max_value, 
+                    callback=command.get_tagname,
+                )
 
     
-    def get_url(self, problem: Problem) -> str:
+    @staticmethod
+    def get_url(problem: Problem) -> str:
+        """Ger url for chosen problem from codenames web server"""
+
         return f"https://codeforces.com/problemset/problem/{problem.contest_id}/{problem.index}"
 
 
@@ -157,7 +165,7 @@ class Command(BaseCommand):
     
     @bot.message_handler(func=lambda message: True)
     def echo_message(message):
-        bot.reply_to(message, message.text)
+        bot.reply_to(message, text='Пожалуйста, выберите необходимую команду')
 
 
     def handle(self, *args, **kwargs):
