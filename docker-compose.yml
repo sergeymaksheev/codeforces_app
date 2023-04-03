@@ -14,6 +14,7 @@ services:
     volumes:
       - codeforces_app-django:/usr/src/app
       - codeforces_app-static:/usr/src/app/static
+      - .:/app
     env_file: ./codeforces_app/.env
     environment:
       - DEBUG='true'

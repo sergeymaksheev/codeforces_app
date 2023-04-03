@@ -5,12 +5,14 @@ FROM python:3.10.7
 WORKDIR /app
 
 RUN pip install --upgrade pip
-ADD ./requirements.txt /app/
-RUN pip install -r requirements.txt
+ADD ./requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
 
+ADD . /app
 ADD ./codeforces_app /app/codeforces_app
 
 COPY . .
+
 
 COPY ./docker/backend/celery/worker_start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
